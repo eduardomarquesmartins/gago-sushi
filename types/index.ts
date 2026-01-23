@@ -16,7 +16,7 @@ export interface CartItem extends Product {
 }
 
 export interface Address {
-    zip: string;
+    neighborhood: string;
     street: string;
     number: string;
     complement?: string;

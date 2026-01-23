@@ -23,7 +23,7 @@ export default function RegisterPage() {
         const name = formData.get('name') as string;
         const phone = formData.get('phone') as string;
         const email = formData.get('email') as string;
-        const zip = formData.get('zip') as string;
+        const neighborhood = formData.get('neighborhood') as string;
         const street = formData.get('street') as string;
         const number = formData.get('number') as string;
         const complement = formData.get('complement') as string;
@@ -36,7 +36,7 @@ export default function RegisterPage() {
             email,
             password,
             address: {
-                zip,
+                neighborhood,
                 street,
                 number,
                 complement
@@ -141,8 +141,8 @@ export default function RegisterPage() {
                         <h3 style={{ marginBottom: '1rem', fontWeight: 700 }}>Endereço de Entrega</h3>
 
                         <div style={{ marginBottom: '1rem' }}>
-                            <label style={labelStyle}>CEP</label>
-                            <input name="zip" type="text" required style={inputStyle} placeholder="00000-000" onBlur={handleCepBlur} />
+                            <label style={labelStyle}>Bairro</label>
+                            <input name="neighborhood" type="text" required style={inputStyle} placeholder="Ex: Centro" />
                         </div>
 
                         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1rem', marginBottom: '1rem' }}>

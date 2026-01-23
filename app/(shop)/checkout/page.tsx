@@ -32,7 +32,7 @@ export default function CheckoutPage() {
     const [isSavingAddress, setIsSavingAddress] = useState(false);
 
     // New Address Form States
-    const [newZip, setNewZip] = useState('');
+    const [newNeighborhood, setNewNeighborhood] = useState('');
     const [newAddress, setNewAddress] = useState('');
     const [newNumber, setNewNumber] = useState('');
     const [newComplement, setNewComplement] = useState('');
@@ -40,7 +40,7 @@ export default function CheckoutPage() {
     // Guest Data States
     const [guestName, setGuestName] = useState('');
     const [guestPhone, setGuestPhone] = useState('');
-    const [guestZip, setGuestZip] = useState('');
+    const [guestNeighborhood, setGuestNeighborhood] = useState('');
     const [guestAddress, setGuestAddress] = useState('');
     const [guestNumber, setGuestNumber] = useState('');
     const [guestComplement, setGuestComplement] = useState('');
@@ -64,45 +64,15 @@ export default function CheckoutPage() {
         }
     }, [items, router]);
 
-    const handleGuestCepBlur = async (e: React.FocusEvent<HTMLInputElement>) => {
-        const cep = e.target.value;
-        if (cep.replace(/\D/g, '').length === 8) {
-            const result = await fetchAddressByCep(cep);
-            if (result.success && result.data) {
-                setGuestAddress(result.data.logradouro);
-                if (result.data.localidade !== 'Porto Alegre') {
-                    alert(`Atenção: Entregamos apenas em Porto Alegre. Sua cidade identificada foi: ${result.data.localidade}.`);
-                }
-            } else if (result.error) {
-                alert(result.error);
-            }
-        }
-    };
-
-    const handleNewAddressCepBlur = async (e: React.FocusEvent<HTMLInputElement>) => {
-        const cep = e.target.value;
-        if (cep.replace(/\D/g, '').length === 8) {
-            const result = await fetchAddressByCep(cep);
-            if (result.success && result.data) {
-                setNewAddress(result.data.logradouro);
-                if (result.data.localidade !== 'Porto Alegre') {
-                    alert(`Atenção: Entregamos apenas em Porto Alegre. Sua cidade identificada foi: ${result.data.localidade}.`);
-                }
-            } else if (result.error) {
-                alert(result.error);
-            }
-        }
-    };
-
     const handleSaveAddress = async () => {
-        if (!user || !user.id || !newAddress || !newNumber) {
-            alert("Preencha os campos obrigatórios (Rua e Número).");
+        if (!user || !user.id || !newAddress || !newNumber || !newNeighborhood) {
+            alert("Preencha os campos obrigatórios (Bairro, Rua e Número).");
             return;
         }
 
         setIsSavingAddress(true);
         const addressData = {
-            zip: newZip,
+            neighborhood: newNeighborhood,
             street: newAddress,
             number: newNumber,
             complement: newComplement
@@ -116,7 +86,7 @@ export default function CheckoutPage() {
 
             updateUser({ savedAddresses: newList });
             setIsAddingAddress(false);
-            setNewZip(''); setNewAddress(''); setNewNumber(''); setNewComplement('');
+            setNewNeighborhood(''); setNewAddress(''); setNewNumber(''); setNewComplement('');
             setSelectedAddressIndex(newList.length - 1); // Seleciona o novo
         } else {
             alert("Erro ao salvar endereço.");
@@ -151,7 +121,7 @@ export default function CheckoutPage() {
         // Determinar endereço selecionado
         let finalAddressStr = '';
         let finalComplementStr = '';
-        let finalZipStr = '';
+        let finalNeighborhoodStr = '';
 
         if (user) {
             const addresses = user.savedAddresses || [user.address];
@@ -160,19 +130,19 @@ export default function CheckoutPage() {
 
             finalAddressStr = `${selected.street}, ${selected.number}`;
             finalComplementStr = selected.complement || '';
-            finalZipStr = selected.zip;
+            finalNeighborhoodStr = selected.neighborhood;
         } else {
             finalAddressStr = `${guestAddress}, ${guestNumber}`;
             finalComplementStr = guestComplement;
-            finalZipStr = guestZip;
+            finalNeighborhoodStr = guestNeighborhood;
         }
 
 
         const finalAddress = finalAddressStr;
         const finalComplement = finalComplementStr;
-        const finalZip = finalZipStr;
+        const finalNeighborhood = finalNeighborhoodStr;
 
-        if (!finalName || !finalPhone || !finalAddress) {
+        if (!finalName || !finalPhone || !finalAddress || !finalNeighborhood) {
             alert("Por favor, preencha todos os dados de entrega.");
             return;
         }
@@ -181,7 +151,7 @@ export default function CheckoutPage() {
         const orderData = {
             customerName: finalName,
             customerPhone: finalPhone,
-            customerAddress: `${finalAddress} - ${finalComplement} ${finalZip ? `- CEP: ${finalZip}` : ''}`,
+            customerAddress: `${finalAddress} - ${finalComplement} - ${finalNeighborhood}`,
             items: items.map(item => ({
                 productId: item.id,
                 name: item.name,
@@ -215,8 +185,8 @@ export default function CheckoutPage() {
 
 📍 *ENTREGA*
 ${finalAddress}
+${finalNeighborhood}
 ${finalComplement ? `Compl: ${finalComplement}` : ''}
-CEP: ${finalZip}
 
 🛒 *RESUMO DO PEDIDO*
 ${itemsList}
@@ -260,7 +230,7 @@ ${paymentMethod === 'dinheiro' && troco ? `💱 *Troco para:* R$ ${troco}` : ''}
                 <h3 style={{ fontWeight: 600 }}>Endereço de Entrega</h3>
             </div>
             <div style={{ display: 'grid', gap: '1rem' }}>
-                <input style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd' }} placeholder="CEP (Opcional)" value={guestZip} onChange={e => setGuestZip(e.target.value)} onBlur={handleGuestCepBlur} />
+                <input style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd' }} placeholder="Bairro" value={guestNeighborhood} onChange={e => setGuestNeighborhood(e.target.value)} />
                 <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1rem' }}>
                     <input style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd' }} placeholder="Rua" value={guestAddress} onChange={e => setGuestAddress(e.target.value)} />
                     <input style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd' }} placeholder="Número" value={guestNumber} onChange={e => setGuestNumber(e.target.value)} />
@@ -339,7 +309,7 @@ ${paymentMethod === 'dinheiro' && troco ? `💱 *Troco para:* R$ ${troco}` : ''}
                                                 </p>
                                                 <p style={{ fontSize: '0.85rem', color: '#666' }}>
                                                     {addr.complement ? `${addr.complement} - ` : ''}
-                                                    CEP: {addr.zip}
+                                                    {addr.neighborhood}
                                                 </p>
                                             </div>
 
@@ -377,10 +347,9 @@ ${paymentMethod === 'dinheiro' && troco ? `💱 *Troco para:* R$ ${troco}` : ''}
                                 <div style={{ display: 'grid', gap: '1rem' }}>
                                     <input
                                         style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd' }}
-                                        placeholder="CEP (Opcional)"
-                                        value={newZip}
-                                        onChange={e => setNewZip(e.target.value)}
-                                        onBlur={handleNewAddressCepBlur}
+                                        placeholder="Bairro"
+                                        value={newNeighborhood}
+                                        onChange={e => setNewNeighborhood(e.target.value)}
                                     />
                                     <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1rem' }}>
                                         <input

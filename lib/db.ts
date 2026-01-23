@@ -59,7 +59,7 @@ export const ProductModel = mongoose.models.Product || mongoose.model('Product',
 
 // User Schema
 const addressSchema = new mongoose.Schema({
-    zip: { type: String, required: false }, // Made optional
+    neighborhood: { type: String, required: true },
     street: { type: String, required: true },
     number: { type: String, required: true },
     complement: { type: String },

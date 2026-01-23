@@ -323,8 +323,7 @@ export async function updateUserAction(formData: FormData) {
             street: formData.get('street') as string,
             number: formData.get('number') as string,
             neighborhood: formData.get('neighborhood') as string,
-            city: formData.get('city') as string,
-            zip: formData.get('zip') as string,
+            city: formData.get('city') as string, // Mantendo, se existir
         }
     };
 

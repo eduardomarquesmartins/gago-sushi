@@ -32,7 +32,7 @@ export default function AccountPage() {
             phone: formData.get('phone') as string,
             email: formData.get('email') as string,
             address: {
-                zip: formData.get('zip') as string,
+                neighborhood: formData.get('neighborhood') as string,
                 street: formData.get('street') as string,
                 number: formData.get('number') as string,
                 complement: formData.get('complement') as string,
@@ -105,8 +105,8 @@ export default function AccountPage() {
                     <h3 style={{ borderBottom: '1px solid #eee', paddingBottom: '0.5rem', color: 'var(--primary)', fontWeight: 700, marginTop: '1rem' }}>Endereço Padrão</h3>
 
                     <div>
-                        <label style={labelStyle}>CEP</label>
-                        <input name="zip" type="text" defaultValue={user.address.zip} required style={inputStyle} />
+                        <label style={labelStyle}>Bairro</label>
+                        <input name="neighborhood" type="text" defaultValue={user.address.neighborhood} required style={inputStyle} />
                     </div>
 
                     <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1rem' }}>
