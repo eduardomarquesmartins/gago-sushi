@@ -153,7 +153,7 @@ export default function RegisterPage() {
 
                         <div style={{ marginBottom: '1rem' }}>
                             <label style={labelStyle}>Bairro</label>
-                            <input name="neighborhood" type="text" required style={inputStyle} placeholder="Ex: Centro" />
+                            <input name="neighborhood" type="text" required style={inputStyle} />
                         </div>
 
                         <div>
