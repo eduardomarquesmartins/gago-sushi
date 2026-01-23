@@ -230,11 +230,11 @@ ${paymentMethod === 'dinheiro' && troco ? `💱 *Troco para:* R$ ${troco}` : ''}
                 <h3 style={{ fontWeight: 600 }}>Endereço de Entrega</h3>
             </div>
             <div style={{ display: 'grid', gap: '1rem' }}>
-                <input style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd' }} placeholder="Bairro" value={guestNeighborhood} onChange={e => setGuestNeighborhood(e.target.value)} />
                 <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1rem' }}>
                     <input style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd' }} placeholder="Rua" value={guestAddress} onChange={e => setGuestAddress(e.target.value)} />
                     <input style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd' }} placeholder="Número" value={guestNumber} onChange={e => setGuestNumber(e.target.value)} />
                 </div>
+                <input style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd' }} placeholder="Bairro" value={guestNeighborhood} onChange={e => setGuestNeighborhood(e.target.value)} />
                 <input style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd' }} placeholder="Complemento (Opcional)" value={guestComplement} onChange={e => setGuestComplement(e.target.value)} />
             </div>
         </div>
@@ -345,12 +345,6 @@ ${paymentMethod === 'dinheiro' && troco ? `💱 *Troco para:* R$ ${troco}` : ''}
                             <div style={{ animation: 'fadeIn 0.3s ease' }}>
                                 <h4 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '0.8rem' }}>Novo Endereço</h4>
                                 <div style={{ display: 'grid', gap: '1rem' }}>
-                                    <input
-                                        style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd' }}
-                                        placeholder="Bairro"
-                                        value={newNeighborhood}
-                                        onChange={e => setNewNeighborhood(e.target.value)}
-                                    />
                                     <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1rem' }}>
                                         <input
                                             style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd' }}
@@ -365,6 +359,12 @@ ${paymentMethod === 'dinheiro' && troco ? `💱 *Troco para:* R$ ${troco}` : ''}
                                             onChange={e => setNewNumber(e.target.value)}
                                         />
                                     </div>
+                                    <input
+                                        style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd' }}
+                                        placeholder="Bairro"
+                                        value={newNeighborhood}
+                                        onChange={e => setNewNeighborhood(e.target.value)}
+                                    />
                                     <input
                                         style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd' }}
                                         placeholder="Complemento"

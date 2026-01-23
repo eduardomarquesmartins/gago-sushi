@@ -104,11 +104,6 @@ export default function AccountPage() {
 
                     <h3 style={{ borderBottom: '1px solid #eee', paddingBottom: '0.5rem', color: 'var(--primary)', fontWeight: 700, marginTop: '1rem' }}>Endereço Padrão</h3>
 
-                    <div>
-                        <label style={labelStyle}>Bairro</label>
-                        <input name="neighborhood" type="text" defaultValue={user.address.neighborhood} required style={inputStyle} />
-                    </div>
-
                     <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1rem' }}>
                         <div>
                             <label style={labelStyle}>Rua</label>
@@ -118,6 +113,11 @@ export default function AccountPage() {
                             <label style={labelStyle}>Número</label>
                             <input name="number" type="text" defaultValue={user.address.number} required style={inputStyle} />
                         </div>
+                    </div>
+
+                    <div>
+                        <label style={labelStyle}>Bairro</label>
+                        <input name="neighborhood" type="text" defaultValue={user.address.neighborhood} required style={inputStyle} />
                     </div>
 
                     <div>

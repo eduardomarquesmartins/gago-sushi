@@ -140,11 +140,6 @@ export default function RegisterPage() {
                     <div style={{ borderTop: '1px solid #eee', margin: '1rem 0', paddingTop: '1rem' }}>
                         <h3 style={{ marginBottom: '1rem', fontWeight: 700 }}>Endereço de Entrega</h3>
 
-                        <div style={{ marginBottom: '1rem' }}>
-                            <label style={labelStyle}>Bairro</label>
-                            <input name="neighborhood" type="text" required style={inputStyle} placeholder="Ex: Centro" />
-                        </div>
-
                         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
                             <div>
                                 <label style={labelStyle}>Rua</label>
@@ -154,6 +149,11 @@ export default function RegisterPage() {
                                 <label style={labelStyle}>Número</label>
                                 <input name="number" type="text" required style={inputStyle} />
                             </div>
+                        </div>
+
+                        <div style={{ marginBottom: '1rem' }}>
+                            <label style={labelStyle}>Bairro</label>
+                            <input name="neighborhood" type="text" required style={inputStyle} placeholder="Ex: Centro" />
                         </div>
 
                         <div>
