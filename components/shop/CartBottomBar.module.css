@@ -1,0 +1,94 @@
+.wrapper {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 90;
+    padding: 1rem;
+    pointer-events: none;
+    /* Permite clicar no fundo se a barra não ocupar tudo, mas o botão tem pointer-events auto */
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bar {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    background: var(--primary);
+    /* Laranja Gago Sushi */
+    color: white;
+    border: none;
+    border-radius: 16px;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 10px 25px rgba(255, 85, 0, 0.3);
+    cursor: pointer;
+    pointer-events: auto;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.bar:active {
+    transform: scale(0.98);
+}
+
+.info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.iconBadge {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: white;
+    color: var(--primary);
+    font-size: 0.75rem;
+    font-weight: 800;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.total {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.action {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Ajuste para não conflitar com o botão do WhatsApp */
+@media (min-width: 641px) {
+    .wrapper {
+        bottom: 1rem;
+    }
+}

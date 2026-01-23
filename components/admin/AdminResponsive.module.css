@@ -1,0 +1,138 @@
+/* Mobile Cards */
+.mobileCards {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.card {
+    background: #2a2a2a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.cardTitle {
+    color: #eee;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    line-height: 1.4;
+}
+
+.cardRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333;
+    padding-bottom: 0.5rem;
+}
+
+.cardRow:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.cardLabel {
+    color: #888;
+    font-size: 0.875rem;
+}
+
+.cardValue {
+    color: #eee;
+    font-weight: 500;
+}
+
+.cardActions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    justify-content: flex-end;
+}
+
+/* Action Bar (Search + Buttons) */
+.actionBar {
+    padding: 1rem;
+    border-bottom: 1px solid #333;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.searchInput {
+    display: flex;
+    align-items: center;
+    background: #2a2a2a;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    border: 1px solid #444;
+    flex: 1;
+}
+
+/* Page Header */
+.pageHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+/* Form Grid */
+.formGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+/* Desktop Table */
+.desktopTable {
+    display: none;
+}
+
+/* Media Queries */
+@media (min-width: 768px) {
+    .mobileCards {
+        display: none;
+    }
+
+    .desktopTable {
+        display: table;
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .actionBar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    .searchInput {
+        width: 100%;
+    }
+
+    .pageHeader {
+        flex-direction: column;
+        /* Stack header on mobile if needed, or keep row but ensure wrap */
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .pageHeader h1 {
+        font-size: 1.5rem !important;
+        /* Force smaller title on mobile */
+    }
+
+    .formGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .mobileHidden {
+        display: none !important;
+    }
+}

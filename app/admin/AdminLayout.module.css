@@ -1,0 +1,118 @@
+.adminWrapper {
+    display: flex;
+    min-height: 100vh;
+    background: #121212;
+}
+
+.sidebar {
+    width: 250px;
+    background: #1e1e1e;
+    border-right: 1px solid #333;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.brand {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 3rem;
+    padding-left: 0.5rem;
+}
+
+.nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: #d1d1d1;
+    border-radius: 8px;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+}
+
+.link:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+}
+
+.main {
+    flex: 1;
+    padding: 3rem;
+    overflow-y: auto;
+    color: #fff;
+}
+
+/* === Mobile Responsiveness === */
+@media (max-width: 768px) {
+    .adminWrapper {
+        flex-direction: column;
+    }
+
+    .main {
+        padding: 1.5rem;
+        padding-top: 100px;
+        /* Espaço para navbar superior */
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        border-right: none;
+        border-bottom: 1px solid #333;
+        padding: 0.75rem 1rem;
+        z-index: 100;
+        justify-content: space-around;
+        align-items: center;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .brand {
+        display: none;
+        /* Esconde logo no mobile */
+    }
+
+    .nav {
+        flex-direction: row;
+        width: 100%;
+        gap: 0;
+        overflow-x: auto;
+        /* Enable horizontal scroll */
+        -webkit-overflow-scrolling: touch;
+        /* Smooth scroll on iOS */
+    }
+
+    /* Hide scrollbar for cleaner look */
+    .nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .link {
+        flex-direction: column;
+        gap: 0.25rem;
+        font-size: 0.7rem;
+        padding: 0.5rem;
+        text-align: center;
+        flex: 1;
+        justify-content: center;
+    }
+
+    .link svg {
+        width: 24px;
+        height: 24px;
+        margin-bottom: 2px;
+    }
+}

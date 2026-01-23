@@ -1,0 +1,237 @@
+.container {
+    background: #1e1e1e;
+    border-radius: 12px;
+    border: 1px solid #333;
+    overflow: hidden;
+}
+
+.header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #333;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.searchWrapper {
+    position: relative;
+    min-width: 300px;
+}
+
+.searchInput {
+    width: 100%;
+    padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+    border-radius: 8px;
+    background: #2a2a2a;
+    border: 1px solid #444;
+    color: #fff;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.searchInput:focus {
+    border-color: var(--primary);
+}
+
+.searchIcon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+}
+
+.filterGroup {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    /* Space for scrollbar if needed */
+    -webkit-overflow-scrolling: touch;
+}
+
+.filterBtn {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    border: 1px solid;
+    cursor: pointer;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    transition: all 0.2s;
+}
+
+.tableWrapper {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #eee;
+    min-width: 800px;
+}
+
+.th {
+    padding: 1rem;
+    background: #252525;
+    text-align: left;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: #888;
+}
+
+.td {
+    padding: 1rem;
+    border-bottom: 1px solid #333;
+}
+
+.orderId {
+    font-family: monospace;
+    font-weight: bold;
+    display: block;
+}
+
+.statusBadge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+/* Mobile Card Layout */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 1rem;
+    }
+
+    .searchWrapper {
+        min-width: auto;
+        width: 100%;
+    }
+
+    .filterGroup {
+        width: 100%;
+        padding-bottom: 0.5rem;
+    }
+
+    /* Hide standard table header */
+    .table thead {
+        display: none;
+    }
+
+    .table,
+    .table tbody,
+    .table tr,
+    .table td {
+        display: block;
+        width: 100%;
+    }
+
+    .table {
+        min-width: auto;
+    }
+
+    .table tr {
+        background: #1e1e1e;
+        border-bottom: 1px solid #333;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        border-radius: 8px;
+        position: relative;
+    }
+
+    /* Adjust specific cell styling for card view */
+    .td {
+        padding: 0.5rem 0;
+        border-bottom: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        text-align: right;
+    }
+
+    .td:before {
+        content: attr(data-label);
+        font-size: 0.75rem;
+        color: #888;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-right: 1rem;
+        text-align: left;
+        flex: 1;
+    }
+
+    /* Order ID row - make it prominent */
+    .td:first-child {
+        border-bottom: 1px solid #333;
+        padding-bottom: 0.75rem;
+        margin-bottom: 0.5rem;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .td:first-child:before {
+        display: none;
+        /* Hide 'Pedido' label for cleaner look */
+    }
+
+    /* Customer info row */
+    .td:nth-child(2) {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .td:nth-child(2):before {
+        display: none;
+    }
+
+    /* Items row */
+    .td:nth-child(3) {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+        background: #252525;
+        padding: 0.75rem;
+        border-radius: 8px;
+        margin: 0.5rem 0;
+    }
+
+    .td:nth-child(3):before {
+        margin-bottom: 0.25rem;
+    }
+
+    /* Actions row */
+    .td:last-child {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #333;
+        justify-content: flex-end;
+        gap: 0.5rem;
+    }
+
+    .td:last-child:before {
+        display: none;
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+}

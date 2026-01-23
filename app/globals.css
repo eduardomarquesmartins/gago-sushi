@@ -1,0 +1,80 @@
+:root {
+  /* Cores Principais */
+  --background: #f4f4f5;
+  /* Branco 'off-white' mais escuro */
+  --foreground: #1a1a1a;
+  /* Preto Suave */
+
+  /* Cores de Destaque */
+  --primary: #FF5500;
+  /* Laranja Vibrante */
+  --primary-light: #FF7700;
+  --accent: #FFD700;
+  /* Amarelo */
+
+  /* Superfícies (Cards, Navbars) */
+  --surface: #ffffff;
+  /* Branco Puro para destacar no fundo cinza */
+  --surface-hover: #eeeeee;
+  --border: #e0e0e0;
+
+  /* Gradientes */
+  --gradient-main: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  --gradient-hover: linear-gradient(135deg, var(--primary-light) 0%, #FFE033 100%);
+
+  /* Espaçamentos */
+  --radius: 12px;
+  --container-padding: 1.5rem;
+  /* Leve ajuste para mobile */
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-poppins), sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--surface-hover);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Utilitários Básicos */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+.text-gradient {
+  background: var(--gradient-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

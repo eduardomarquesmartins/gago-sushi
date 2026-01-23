@@ -1,0 +1,97 @@
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: var(--radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    gap: 0.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Variantes */
+.primary {
+    background: var(--gradient-main);
+    color: #000;
+    /* Texto preto para contraste no amarelo/laranja */
+    box-shadow: 0 4px 15px rgba(255, 85, 0, 0.3);
+}
+
+.primary:hover:not(:disabled) {
+    background: var(--gradient-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(255, 85, 0, 0.4);
+}
+
+.secondary {
+    background: var(--surface-hover);
+    color: var(--foreground);
+}
+
+.secondary:hover:not(:disabled) {
+    background: #333;
+}
+
+.outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--foreground);
+}
+
+.outline:hover:not(:disabled) {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.ghost {
+    background: transparent;
+    color: var(--foreground);
+}
+
+.ghost:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--primary);
+}
+
+/* Tamanhos */
+.sm {
+    height: 32px;
+    padding: 0 1rem;
+    font-size: 0.875rem;
+}
+
+.md {
+    height: 44px;
+    padding: 0 1.5rem;
+    font-size: 1rem;
+}
+
+.lg {
+    height: 56px;
+    padding: 0 2rem;
+    font-size: 1.125rem;
+}
+
+/* Ícones */
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}

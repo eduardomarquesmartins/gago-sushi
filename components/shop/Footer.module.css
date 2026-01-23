@@ -1,0 +1,72 @@
+.footer {
+    background-color: #1a1a1a;
+    color: #fff;
+    padding: 3rem 1.5rem 1rem;
+    margin-top: 4rem;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 3rem;
+}
+
+.section h3 {
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+    color: #ff5500;
+}
+
+.address {
+    display: flex;
+    gap: 0.5rem;
+    line-height: 1.6;
+    color: #ccc;
+    font-size: 0.9rem;
+}
+
+.cnpj {
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.hours {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.hours li {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: #ccc;
+}
+
+.hours li span {
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 0.2rem;
+}
+
+.bottom {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #333;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+@media (min-width: 768px) {
+    .hours li {
+        flex-direction: row;
+        justify-content: space-between;
+        border-bottom: 1px solid #333;
+        padding-bottom: 0.5rem;
+    }
+}
