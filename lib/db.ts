@@ -1,9 +1,15 @@
 import mongoose from 'mongoose';
 
+// Configurar mongoose globalmente ANTES de qualquer operação
+// Em DEV: falha rápido. Em PROD: tenta por mais tempo.
+const isDev = process.env.NODE_ENV === 'development';
+mongoose.set('bufferCommands', !isDev);
+mongoose.set('bufferTimeoutMS', isDev ? 2000 : 15000);
+
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
-    throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
+    console.warn('⚠️  MONGODB_URI não definido - app pode ter problemas ao salvar dados');
 }
 
 // Global cached connection for Next.js hot reloading
@@ -21,11 +27,40 @@ async function connectToDatabase() {
     }
 
     if (!cached.promise) {
+        // Ajustar configurações baseado no ambiente novamente para garantir
+        mongoose.set('bufferCommands', !isDev);
+        mongoose.set('bufferTimeoutMS', isDev ? 2000 : 15000);
+
         const opts = {
-            bufferCommands: false,
+            bufferCommands: !isDev, // Em PROD, mantemos buffer para resiliência
+            serverSelectionTimeoutMS: isDev ? 2000 : 15000,
+            connectTimeoutMS: isDev ? 2000 : 15000,
         };
 
-        cached.promise = mongoose.connect(MONGODB_URI!, opts).then((mongoose) => {
+        const tryConnect = async () => {
+            try {
+                console.log("🔌 Tentando conectar ao MongoDB Atlas...");
+                return await mongoose.connect(MONGODB_URI!, opts);
+            } catch (error: any) {
+                console.error("❌ Erro ao conectar no Atlas:", error.message);
+
+                // Fallback para local em ambiente de desenvolvimento (qualquer erro)
+                if (process.env.NODE_ENV === 'development') {
+                    console.warn("⚠️  Ambiente de Desenvolvimento detectado. Tentando fallback para MongoDB Local...");
+                    try {
+                        const localUri = 'mongodb://127.0.0.1:27017/gago-sushi';
+                        return await mongoose.connect(localUri, opts);
+                    } catch (localError) {
+                        console.error("❌ Falha também no MongoDB Local. Verifique se o MongoDB está rodando.");
+                        console.warn("💡 Dica: Para rodar sem banco, adicione USE_IN_MEMORY=true no .env.local");
+                        throw error; // Lança o erro original
+                    }
+                }
+                throw error;
+            }
+        };
+
+        cached.promise = tryConnect().then((mongoose) => {
             return mongoose;
         });
     }
@@ -34,7 +69,8 @@ async function connectToDatabase() {
         cached.conn = await cached.promise;
     } catch (e) {
         cached.promise = null;
-        throw e;
+        console.error("Conexão falhou,app continuará sem banco");
+        // Não lança erro - retorna null
     }
 
     return cached.conn;

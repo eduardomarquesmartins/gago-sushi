@@ -81,12 +81,12 @@ export const CartDrawer = () => {
                         </div>
                         <div className={styles.totalRow}>
                             <span>Entrega</span>
-                            <span>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(deliveryFee)}</span>
+                            <span style={{ fontSize: '0.9rem', color: '#666' }}>Será calculada na finalização</span>
                         </div>
                         <div className={`${styles.totalRow} ${styles.finalTotal}`}>
-                            <span>Total</span>
+                            <span>Subtotal</span>
                             <span className={styles.totalValue}>
-                                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total)}
+                                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(subtotal)}
                             </span>
                         </div>
                         <Button size="lg" style={{ width: '100%' }} onClick={() => {

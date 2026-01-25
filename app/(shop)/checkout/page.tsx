@@ -14,9 +14,31 @@ import Link from 'next/link';
 import { getStoreConfigAction, addNewAddressAction, removeAddressAction, createOrderAction } from "@/lib/actions";
 import { fetchAddressByCep } from "@/lib/viacep";
 
+// Delivery Fees Configuration
+// Delivery Fees Configuration
+const DELIVERY_FEES: Record<string, number> = {
+    'Belem Velho': 18,
+    'Belem Novo': 5,
+    'Campo Novo': 12,
+    'Chapeu do Sol': 8,
+    'Ponta Grossa': 8,
+    'Pitinga': 18,
+    'Lami': 20,
+    'Hipica': 0,
+    'Juca Batista': 5,
+};
+
+const NEIGHBORHOODS = Object.keys(DELIVERY_FEES);
+
+const getDeliveryFee = (neighborhood: string) => {
+    // Busca exata agora que temos dropdown
+    if (DELIVERY_FEES[neighborhood] !== undefined) return DELIVERY_FEES[neighborhood];
+    return null;
+}
+
 export default function CheckoutPage() {
     const router = useRouter();
-    const { items, total, clearCart } = useCart();
+    const { items, subtotal, clearCart } = useCart();
     const { user, isAuthenticated, updateUser } = useUser();
 
     // States
@@ -122,6 +144,7 @@ export default function CheckoutPage() {
         let finalAddressStr = '';
         let finalComplementStr = '';
         let finalNeighborhoodStr = '';
+        let deliveryFee = 0;
 
         if (user) {
             const addresses = user.savedAddresses || [user.address];
@@ -135,6 +158,19 @@ export default function CheckoutPage() {
             finalAddressStr = `${guestAddress}, ${guestNumber}`;
             finalComplementStr = guestComplement;
             finalNeighborhoodStr = guestNeighborhood;
+        }
+
+        const fee = getDeliveryFee(finalNeighborhoodStr);
+        if (fee === null) {
+            // Se não encontrou o bairro na lista, podemos avisar ou cobrar taxa padrão?
+            // O usuário pediu especificamente esses valores. Vamos assumir que se não tá na lista, é "A combinar" ou avisar.
+            // Para não travar, vamos avisar mas permitir continuar com taxa a combinar (0 ou msg)?
+            // O ideal é alertar.
+            const proceed = confirm(`O bairro "${finalNeighborhoodStr}" não está na nossa lista de taxas fixas. Deseja prosseguir com taxa a combinar?`);
+            if (!proceed) return;
+            deliveryFee = 0;
+        } else {
+            deliveryFee = fee;
         }
 
 
@@ -158,7 +194,7 @@ export default function CheckoutPage() {
                 quantity: item.quantity,
                 price: item.price
             })),
-            total: total,
+            total: subtotal + deliveryFee,
             paymentMethod: paymentMethod,
             change: paymentMethod === 'dinheiro' ? troco : undefined,
             status: 'PENDING'
@@ -191,7 +227,9 @@ ${finalComplement ? `Compl: ${finalComplement}` : ''}
 🛒 *RESUMO DO PEDIDO*
 ${itemsList}
 
-💰 *TOTAL:* ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total)}
+💰 *Subtotal:* ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(subtotal)}
+🛵 *Entrega:* ${deliveryFee === 0 && getDeliveryFee(finalNeighborhoodStr) !== 0 ? 'A Combinar' : new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(deliveryFee)}
+💰 *TOTAL:* ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(subtotal + deliveryFee)}
 💳 *PAGAMENTO:* ${paymentMethod.toUpperCase()}
 ${paymentMethod === 'dinheiro' && troco ? `💱 *Troco para:* R$ ${troco}` : ''}
 
@@ -234,7 +272,16 @@ ${paymentMethod === 'dinheiro' && troco ? `💱 *Troco para:* R$ ${troco}` : ''}
                     <input style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd' }} placeholder="Rua" value={guestAddress} onChange={e => setGuestAddress(e.target.value)} />
                     <input style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd' }} placeholder="Número" value={guestNumber} onChange={e => setGuestNumber(e.target.value)} />
                 </div>
-                <input style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd' }} placeholder="Bairro" value={guestNeighborhood} onChange={e => setGuestNeighborhood(e.target.value)} />
+                <select
+                    style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd', background: 'white' }}
+                    value={guestNeighborhood}
+                    onChange={e => setGuestNeighborhood(e.target.value)}
+                >
+                    <option value="">Selecione o Bairro</option>
+                    {NEIGHBORHOODS.map(n => (
+                        <option key={n} value={n}>{n}</option>
+                    ))}
+                </select>
                 <input style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd' }} placeholder="Complemento (Opcional)" value={guestComplement} onChange={e => setGuestComplement(e.target.value)} />
             </div>
         </div>
@@ -492,9 +539,39 @@ ${paymentMethod === 'dinheiro' && troco ? `💱 *Troco para:* R$ ${troco}` : ''}
 
                 {/* Total e Enviar */}
                 <div style={{ background: 'white', padding: '1.5rem', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem', fontSize: '1.2rem', fontWeight: 700 }}>
-                        <span>Total do Pedido</span>
-                        <span>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total)}</span>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.5rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1rem', color: '#666' }}>
+                            <span>Subtotal</span>
+                            <span>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(subtotal)}</span>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1rem', color: '#666' }}>
+                            <span>Entrega</span>
+                            <span>
+                                {(() => {
+                                    // Calculate fee for display
+                                    const activeNeighbor = isAuthenticated
+                                        ? (user?.savedAddresses?.[selectedAddressIndex]?.neighborhood || user?.address?.neighborhood || '')
+                                        : guestNeighborhood;
+                                    const fee = getDeliveryFee(activeNeighbor);
+
+                                    if (fee === null && activeNeighbor.trim().length > 0) return 'A Combinar';
+                                    if (activeNeighbor.trim().length === 0) return 'Selecione o bairro';
+                                    return fee === 0 ? 'Grátis' : new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(fee);
+                                })()}
+                            </span>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.2rem', fontWeight: 700, marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid #eee' }}>
+                            <span>Total do Pedido</span>
+                            <span>
+                                {(() => {
+                                    const activeNeighbor = isAuthenticated
+                                        ? (user?.savedAddresses?.[selectedAddressIndex]?.neighborhood || user?.address?.neighborhood || '')
+                                        : guestNeighborhood;
+                                    const fee = getDeliveryFee(activeNeighbor) ?? 0;
+                                    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(subtotal + fee);
+                                })()}
+                            </span>
+                        </div>
                     </div>
 
                     <Button
