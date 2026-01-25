@@ -7,7 +7,7 @@ import styles from './CartBottomBar.module.css';
 import { ShoppingBag, ChevronRight } from 'lucide-react';
 
 export const CartBottomBar = () => {
-    const { items, total, openCart } = useCart();
+    const { items, subtotal, openCart } = useCart();
 
     if (items.length === 0) return null;
 
@@ -22,7 +22,7 @@ export const CartBottomBar = () => {
                         <span className={styles.badge}>{itemCount}</span>
                     </div>
                     <span className={styles.total}>
-                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total)}
+                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(subtotal)}
                     </span>
                 </div>
 
