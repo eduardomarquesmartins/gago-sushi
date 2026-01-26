@@ -117,15 +117,9 @@ export default function RegisterPage() {
                         <input name="name" type="text" required style={inputStyle} placeholder="Ex: João Silva" />
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                        <div>
-                            <label style={labelStyle}>CPF <span style={{ fontWeight: 400, color: '#888' }}>(Opcional)</span></label>
-                            <input name="cpf" type="text" style={inputStyle} placeholder="000.000.000-00" />
-                        </div>
-                        <div>
-                            <label style={labelStyle}>Telefone / WhatsApp</label>
-                            <input name="phone" type="text" required style={inputStyle} placeholder="(00) 00000-0000" />
-                        </div>
+                    <div>
+                        <label style={labelStyle}>Telefone / WhatsApp</label>
+                        <input name="phone" type="text" required style={inputStyle} placeholder="(00) 00000-0000" />
                     </div>
 
                     <div>
