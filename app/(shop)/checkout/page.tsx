@@ -275,17 +275,33 @@ ${paymentMethod === 'dinheiro' && troco ? `💱 *Troco para:* R$ ${troco}` : ''}
                 <div className="container" style={{ paddingTop: '140px', maxWidth: '500px', margin: '0 auto', textAlign: 'center' }}>
                     <h1 style={{ fontSize: '1.5rem', marginBottom: '2rem' }}>Como deseja continuar?</h1>
 
-                    <Link href="/login?redirect=/checkout">
-                        <Button size="lg" style={{ width: '100%', marginBottom: '1rem' }}>
-                            <LogIn size={20} style={{ marginRight: '0.5rem' }} />
-                            Entrar com minha conta
-                        </Button>
-                    </Link>
+                    <div style={{ display: 'grid', gap: '1rem' }}>
+                        <Link href="/register">
+                            <Button size="lg" style={{ width: '100%', background: 'linear-gradient(45deg, #FF9900, #F57C00)', border: 'none' }}>
+                                <User size={20} style={{ marginRight: '0.5rem' }} />
+                                Criar Minha Conta
+                            </Button>
+                        </Link>
 
-                    <Button variant="ghost" size="lg" style={{ width: '100%', border: '1px solid #ddd' }} onClick={() => setGuestMode(true)}>
-                        <User size={20} style={{ marginRight: '0.5rem' }} />
-                        Finalizar sem cadastro
-                    </Button>
+                        <p style={{ fontSize: '0.9rem', color: '#666', margin: '0 0 0.5rem' }}>Ganhe agilidade nos próximos pedidos!</p>
+
+                        <Link href="/login?redirect=/checkout">
+                            <Button variant="outline" size="lg" style={{ width: '100%', borderColor: 'var(--primary)', color: 'var(--primary)' }}>
+                                <LogIn size={20} style={{ marginRight: '0.5rem' }} />
+                                Já tenho conta
+                            </Button>
+                        </Link>
+
+                        <div style={{ display: 'flex', alignItems: 'center', margin: '1rem 0' }}>
+                            <div style={{ flex: 1, height: '1px', background: '#ddd' }}></div>
+                            <span style={{ padding: '0 1rem', color: '#999', fontSize: '0.9rem' }}>ou</span>
+                            <div style={{ flex: 1, height: '1px', background: '#ddd' }}></div>
+                        </div>
+
+                        <Button variant="ghost" size="lg" style={{ width: '100%', border: '1px solid #ddd', color: '#666' }} onClick={() => setGuestMode(true)}>
+                            Finalizar sem cadastro
+                        </Button>
+                    </div>
                 </div>
             </main>
         );
