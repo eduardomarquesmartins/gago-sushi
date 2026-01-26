@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { useUser } from '@/context/UserContext';
 import { registerUserAction } from '@/lib/actions';
 import { fetchAddressByCep } from '@/lib/viacep';
+import { NEIGHBORHOODS } from '@/lib/constants';
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -151,9 +152,16 @@ export default function RegisterPage() {
                             </div>
                         </div>
 
+
+
                         <div style={{ marginBottom: '1rem' }}>
                             <label style={labelStyle}>Bairro</label>
-                            <input name="neighborhood" type="text" required style={inputStyle} />
+                            <select name="neighborhood" required style={inputStyle} defaultValue="">
+                                <option value="" disabled>Selecione seu bairro</option>
+                                {NEIGHBORHOODS.map(n => (
+                                    <option key={n} value={n}>{n}</option>
+                                ))}
+                            </select>
                         </div>
 
                         <div>

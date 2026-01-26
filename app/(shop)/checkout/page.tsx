@@ -14,27 +14,7 @@ import Link from 'next/link';
 import { getStoreConfigAction, addNewAddressAction, removeAddressAction, createOrderAction } from "@/lib/actions";
 import { fetchAddressByCep } from "@/lib/viacep";
 
-// Delivery Fees Configuration
-// Delivery Fees Configuration
-const DELIVERY_FEES: Record<string, number> = {
-    'Belem Velho': 18,
-    'Belem Novo': 5,
-    'Campo Novo': 12,
-    'Chapeu do Sol': 8,
-    'Ponta Grossa': 8,
-    'Pitinga': 18,
-    'Lami': 20,
-    'Hipica': 0,
-    'Juca Batista': 5,
-};
-
-const NEIGHBORHOODS = Object.keys(DELIVERY_FEES);
-
-const getDeliveryFee = (neighborhood: string) => {
-    // Busca exata agora que temos dropdown
-    if (DELIVERY_FEES[neighborhood] !== undefined) return DELIVERY_FEES[neighborhood];
-    return null;
-}
+import { DELIVERY_FEES, NEIGHBORHOODS, getDeliveryFee } from "@/lib/constants";
 
 export default function CheckoutPage() {
     const router = useRouter();
@@ -406,12 +386,16 @@ ${paymentMethod === 'dinheiro' && troco ? `💱 *Troco para:* R$ ${troco}` : ''}
                                             onChange={e => setNewNumber(e.target.value)}
                                         />
                                     </div>
-                                    <input
-                                        style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd' }}
-                                        placeholder="Bairro"
+                                    <select
+                                        style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd', background: 'white' }}
                                         value={newNeighborhood}
                                         onChange={e => setNewNeighborhood(e.target.value)}
-                                    />
+                                    >
+                                        <option value="">Selecione o Bairro</option>
+                                        {NEIGHBORHOODS.map(n => (
+                                            <option key={n} value={n}>{n}</option>
+                                        ))}
+                                    </select>
                                     <input
                                         style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd' }}
                                         placeholder="Complemento"

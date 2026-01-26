@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { useUser } from '@/context/UserContext';
 import { useRouter } from 'next/navigation';
 import { LogOut, Save, User as UserIcon } from 'lucide-react';
+import { NEIGHBORHOODS } from '@/lib/constants';
 
 export default function AccountPage() {
     const { user, updateUser, logout, isAuthenticated } = useUser();
@@ -117,7 +118,12 @@ export default function AccountPage() {
 
                     <div>
                         <label style={labelStyle}>Bairro</label>
-                        <input name="neighborhood" type="text" defaultValue={user.address.neighborhood} required style={inputStyle} />
+                        <select name="neighborhood" defaultValue={user.address.neighborhood} required style={inputStyle}>
+                            <option value="" disabled>Selecione seu bairro</option>
+                            {NEIGHBORHOODS.map(n => (
+                                <option key={n} value={n}>{n}</option>
+                            ))}
+                        </select>
                     </div>
 
                     <div>
