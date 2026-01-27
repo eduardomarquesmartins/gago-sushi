@@ -5,7 +5,7 @@ import styles from './orders.module.css';
 export const dynamic = 'force-dynamic';
 
 export default async function AdminOrdersPage() {
-    const orders = await getOrdersAction();
+    const orders = await getOrdersAction('current');
 
     return (
         <div className={styles.container}>

@@ -481,10 +481,90 @@ export async function createManualOrderAction(orderData: any) {
     }
 }
 
-export async function getOrdersAction() {
+export async function getOrdersAction(filter: 'current' | 'previous' | 'all' = 'current') {
     await connectToDatabase();
     try {
-        const orders = await OrderModel.find({}).sort({ createdAt: -1 }).lean();
+        let query = {};
+
+        if (filter !== 'all') {
+            const now = new Date();
+            // Ajustar para fuso horário de São Paulo (UTC-3)
+            // Se formos usar UTC como referência base, precisamos garantir que a lógica "6 da manhã local" funcione.
+            // Vou usar uma abordagem simplificada assumindo o servidor em UTC ou local, mas focando na lógica relativa.
+
+            // Lógica:
+            // "Dia Comercial" começa às 06:00.
+            // Se agora é 05:59 de terça, o "Dia Comercial" começou às 06:00 de segunda.
+            // Se agora é 06:01 de terça, o "Dia Comercial" começou às 06:00 de terça.
+
+            // Vamos trabalhar com timestamp para facilitar.
+            // Pegamos a hora atual. Subtraímos 6 horas. O "Dia" é a data resultante (zerando horas/min).
+            // Em seguida somamos 6 horas para ter o timestamp de corte.
+
+            const timeZoneOffset = -3; // São Paulo UTC-3 (simplificando sem considerar horário de verão legacy, já que não temos mais)
+
+            // Criar data atual ajustada para o fuso (apenas para extrair dia/mês/ano correto do "dia comercial")
+            const localNow = new Date(now.getTime() + (timeZoneOffset * 60 * 60 * 1000));
+
+            // Se for antes das 6 da manhã (no horário local), pertence ao dia anterior.
+            const currentHour = localNow.getUTCHours();
+
+            let cutoffDate = new Date(localNow);
+            if (currentHour < 6) {
+                cutoffDate.setUTCDate(cutoffDate.getUTCDate() - 1);
+            }
+
+            // Definir o corte exato: 06:00:00.000 do dia identificado
+            cutoffDate.setUTCHours(6, 0, 0, 0);
+
+            // Converter de volta para UTC "real" para comparar com o banco (que salva em UTC)
+            // Se o cutoff local é 06:00, e o fuso é UTC-3, então em UTC é 09:00.
+            // cutoffDate aqui (construído como Date) representa o momento no tempo.
+            // Como construi usando métodos UTC sobre o "localNow", preciso ajustar.
+            // ESPERA: A lógica acima com getUTCHours() em cima do "localNow" já está meio confusa.
+            // Vamos reiniciar com uma lógica mais segura usando strings ISO se necessário ou aritmética direta.
+
+            // TENTATIVA 2 (Mais robusta):
+            // 1. Obter hora atual
+            // 2. Subtrair 6 horas.
+            // 3. Zerar horas, minutos, segundos -> Isso nos dá o "Início do dia comercial atual" (às 00:00 relativas).
+            // 4. Somar 6 horas -> "Início do dia comercial atual" (às 06:00 relativas).
+
+            // Porém, tudo isso tem que ser em relação ao fuso horário do Brasil?
+            // O servidor Vercel roda em UTC.
+            // O banco Mongo salva em ISO UTC.
+
+            // O Brasil está em UTC-3.
+            // 06:00 BRT = 09:00 UTC.
+
+            const nowUTC = new Date();
+            const nowBRT_Ms = nowUTC.getTime() - (3 * 60 * 60 * 1000); // hora "visual" no brasil em ms
+            const nowBRT = new Date(nowBRT_Ms);
+
+            // Se user setou as 06:00 BRT como limite.
+            // Se agora for 08:00 BRT. Cutoff é hoje às 06:00 BRT.
+            // Se agora for 04:00 BRT. Cutoff é ontem às 06:00 BRT.
+
+            const businessDayStart = new Date(nowBRT);
+            if (businessDayStart.getUTCHours() < 6) {
+                businessDayStart.setUTCDate(businessDayStart.getUTCDate() - 1);
+            }
+            businessDayStart.setUTCHours(6, 0, 0, 0);
+
+            // Agora converter businessDayStart (que está "fingindo" ser UTC mas é horario BR) de volta para UTC real para query
+            const cutoffTimestamp = businessDayStart.getTime() + (3 * 60 * 60 * 1000);
+            const cutoffDateReal = new Date(cutoffTimestamp);
+
+            if (filter === 'current') {
+                // Mostrar pedidos DEPOIS do corte
+                query = { createdAt: { $gte: cutoffDateReal.toISOString() } };
+            } else if (filter === 'previous') {
+                // Mostrar pedidos ANTES do corte
+                query = { createdAt: { $lt: cutoffDateReal.toISOString() } };
+            }
+        }
+
+        const orders = await OrderModel.find(query).sort({ createdAt: -1 }).lean();
         return JSON.parse(JSON.stringify(orders));
     } catch (error) {
         console.error("Error fetching orders:", error);

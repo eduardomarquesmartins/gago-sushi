@@ -47,7 +47,7 @@ export interface Order {
     total: number;
     paymentMethod: string;
     change?: string;
-    status: 'PENDING' | 'PREPARING' | 'READY' | 'DELIVERY' | 'COMPLETED' | 'CANCELLED';
+    status: 'PENDING' | 'PREPARING' | 'READY' | 'DELIVERY' | 'COMPLETED' | 'CANCELLED' | 'ARCHIVED';
     createdAt: string;
     updatedAt: string;
 }
