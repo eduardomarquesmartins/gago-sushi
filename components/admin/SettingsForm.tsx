@@ -4,7 +4,7 @@ import { useState, useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { updateStoreConfigAction } from '@/lib/actions';
 import { Button } from '@/components/ui/Button';
-import { Eye, EyeOff, Save, Key, Phone } from 'lucide-react';
+import { Eye, EyeOff, Save, Key, Phone, MapPin, Trash2 } from 'lucide-react';
 import styles from './AdminResponsive.module.css';
 
 // Interface para o estado do formulário
@@ -20,9 +20,27 @@ const initialState: FormState = {
     message: ''
 };
 
-export function SettingsForm({ currentWhatsapp, currentDeliveryFee = 10, currentPixKey = '' }: { currentWhatsapp: string; currentDeliveryFee?: number; currentPixKey?: string }) {
+export function SettingsForm(props: { currentWhatsapp: string; currentDeliveryFee?: number; currentPixKey?: string; currentNeighborhoodFees?: { name: string, fee: number }[] }) {
     // @ts-ignore
     const [state, formAction] = useActionState(updateStoreConfigAction, initialState);
+
+    // Estados para Taxas por Bairro
+    const [neighborhoodFees, setNeighborhoodFees] = useState<{ name: string; fee: number }[]>(props.currentNeighborhoodFees || []);
+    const [newNeighborhoodName, setNewNeighborhoodName] = useState('');
+    const [newNeighborhoodFee, setNewNeighborhoodFee] = useState('');
+
+    const handleAddNeighborhood = () => {
+        if (!newNeighborhoodName || !newNeighborhoodFee) return;
+        setNeighborhoodFees([...neighborhoodFees, { name: newNeighborhoodName, fee: parseFloat(newNeighborhoodFee) }]);
+        setNewNeighborhoodName('');
+        setNewNeighborhoodFee('');
+    };
+
+    const handleRemoveNeighborhood = (index: number) => {
+        const updated = [...neighborhoodFees];
+        updated.splice(index, 1);
+        setNeighborhoodFees(updated);
+    };
 
     // Estados para inputs controlados
     const [passwords, setPasswords] = useState({
@@ -33,7 +51,7 @@ export function SettingsForm({ currentWhatsapp, currentDeliveryFee = 10, current
 
     const [whatsapps, setWhatsapps] = useState({
         new: '',
-        confirm: '' // Mantendo logica mas poderia remover se quisesse
+        confirm: ''
     });
 
     // Estados de visibilidade
@@ -58,6 +76,8 @@ export function SettingsForm({ currentWhatsapp, currentDeliveryFee = 10, current
 
     return (
         <form action={formAction} className="settings-form">
+            <input type="hidden" name="neighborhoodFees" value={JSON.stringify(neighborhoodFees)} />
+
             <div style={{ background: '#1e1e1e', padding: '2rem', borderRadius: '12px', border: '1px solid #333' }}>
 
                 {state?.error && (
@@ -85,36 +105,78 @@ export function SettingsForm({ currentWhatsapp, currentDeliveryFee = 10, current
                                 name="newWhatsapp"
                                 type="text"
                                 placeholder="(51) 99999-9999"
-                                value={whatsapps.new || formatPhone(currentWhatsapp)}
+                                value={whatsapps.new || formatPhone(props.currentWhatsapp)}
                                 onChange={(e) => handlePhoneChange(e, 'new')}
                                 style={inputStyle}
                             />
                             <p style={{ fontSize: '0.8rem', color: '#666', marginTop: '0.5rem' }}>
-                                Atual: {formatPhone(currentWhatsapp)}
+                                Atual: {formatPhone(props.currentWhatsapp)}
                             </p>
                         </div>
-                        <div>
-                            <label style={{ display: 'block', marginBottom: '0.5rem', color: '#ccc' }}>Taxa de Entrega (R$)</label>
-                            <input
-                                name="deliveryFee"
-                                type="number"
-                                step="0.01"
-                                min="0"
-                                placeholder="Ex: 10.00"
-                                defaultValue={currentDeliveryFee}
-                                style={inputStyle}
-                            />
-                        </div>
+
                         <div style={{ gridColumn: '1 / -1' }}>
                             <label style={{ display: 'block', marginBottom: '0.5rem', color: '#ccc' }}>Chave PIX (CPF, Email, Telefone, ou Aleatória)</label>
                             <input
                                 name="pixKey"
                                 type="text"
                                 placeholder="Digite a chave PIX..."
-                                defaultValue={currentPixKey}
+                                defaultValue={props.currentPixKey}
                                 style={inputStyle}
                             />
                         </div>
+                    </div>
+                </div>
+
+                {/* === SEÇÃO TAXAS POR BAIRRO === */}
+                <h3 style={{ borderBottom: '1px solid #333', paddingBottom: '0.5rem', marginBottom: '1.5rem', color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <MapPin size={20} /> Taxas de Entrega por Bairro
+                </h3>
+
+                <div style={{ marginBottom: '2rem', background: '#2a2a2a', padding: '1.5rem', borderRadius: '8px' }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
+                        <div style={{ flex: '1 1 200px' }}>
+                            <input
+                                placeholder="Nome do Bairro"
+                                value={newNeighborhoodName}
+                                onChange={(e) => setNewNeighborhoodName(e.target.value)}
+                                style={{ ...inputStyle, background: '#333' }}
+                            />
+                        </div>
+                        <div style={{ flex: '1 1 100px' }}>
+                            <input
+                                type="number"
+                                placeholder="Valor R$"
+                                value={newNeighborhoodFee}
+                                onChange={(e) => setNewNeighborhoodFee(e.target.value)}
+                                style={{ ...inputStyle, background: '#333' }}
+                            />
+                        </div>
+                        <div style={{ flex: '0 0 auto' }}>
+                            <Button type="button" onClick={handleAddNeighborhood} size="sm" style={{ height: '42px', width: '100%' }}>
+                                Adicionar
+                            </Button>
+                        </div>
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '300px', overflowY: 'auto' }}>
+                        {neighborhoodFees.length === 0 && (
+                            <p style={{ color: '#666', textAlign: 'center', padding: '1rem' }}>Nenhum bairro cadastrado. A taxa padrão será usada.</p>
+                        )}
+                        {neighborhoodFees.map((item, index) => (
+                            <div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem', background: '#333', borderRadius: '6px', border: '1px solid #444' }}>
+                                <span style={{ color: '#fff', fontWeight: 500 }}>{item.name}</span>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                    <span style={{ color: '#00c851', fontWeight: 600 }}>R$ {item.fee.toFixed(2)}</span>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemoveNeighborhood(index)}
+                                        style={{ background: 'rgba(255, 68, 68, 0.1)', border: 'none', color: '#ff4444', padding: '0.25rem', borderRadius: '4px', cursor: 'pointer' }}
+                                    >
+                                        <Trash2 size={16} />
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
 

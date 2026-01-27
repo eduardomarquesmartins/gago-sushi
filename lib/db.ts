@@ -118,6 +118,10 @@ const configSchema = new mongoose.Schema({
     key: { type: String, default: 'store_config', unique: true }, // Singleton pattern
     whatsappNumber: { type: String, default: '5551999999999' },
     deliveryFee: { type: Number, default: 10 },
+    neighborhoodFees: [{
+        name: { type: String, required: true },
+        fee: { type: Number, required: true }
+    }],
     pixKey: { type: String, default: '' },
 });
 

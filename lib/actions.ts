@@ -94,6 +94,18 @@ export async function updateStoreConfigAction(prevState: any, formData: FormData
                 return clean;
             })() : currentConfig.whatsappNumber,
             deliveryFee: newDeliveryFee ? parseFloat(newDeliveryFee) : currentConfig.deliveryFee,
+            neighborhoodFees: (() => {
+                const feesJson = formData.get('neighborhoodFees') as string;
+                if (feesJson) {
+                    try {
+                        return JSON.parse(feesJson);
+                    } catch (e) {
+                        console.error("Invalid neighborhoodFees JSON", e);
+                        return currentConfig.neighborhoodFees || [];
+                    }
+                }
+                return currentConfig.neighborhoodFees || [];
+            })(),
             pixKey: formData.get('pixKey') as string
         };
 

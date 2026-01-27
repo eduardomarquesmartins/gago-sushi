@@ -14,7 +14,7 @@ import Link from 'next/link';
 import { getStoreConfigAction, addNewAddressAction, removeAddressAction, createOrderAction } from "@/lib/actions";
 import { fetchAddressByCep } from "@/lib/viacep";
 
-import { DELIVERY_FEES, NEIGHBORHOODS, getDeliveryFee } from "@/lib/constants";
+import { DELIVERY_FEES } from "@/lib/constants";
 
 export default function CheckoutPage() {
     const router = useRouter();
@@ -27,6 +27,7 @@ export default function CheckoutPage() {
     const [guestMode, setGuestMode] = useState(false);
     const [whatsappNumber, setWhatsappNumber] = useState('5511999999999'); // Fallback inicial
     const [pixKey, setPixKey] = useState('');
+    const [availableNeighborhoods, setAvailableNeighborhoods] = useState<{ name: string; fee: number }[]>([]);
 
     // Address Management States
     const [isAddingAddress, setIsAddingAddress] = useState(false);
@@ -55,6 +56,9 @@ export default function CheckoutPage() {
             }
             if (config.pixKey) {
                 setPixKey(config.pixKey);
+            }
+            if (config.neighborhoodFees) {
+                setAvailableNeighborhoods(config.neighborhoodFees);
             }
         });
     }, []);
@@ -140,7 +144,9 @@ export default function CheckoutPage() {
             finalNeighborhoodStr = guestNeighborhood;
         }
 
-        const fee = getDeliveryFee(finalNeighborhoodStr);
+        const foundFee = availableNeighborhoods.find(n => n.name === finalNeighborhoodStr);
+        const fee = foundFee ? foundFee.fee : null;
+
         if (fee === null) {
             // Se não encontrou o bairro na lista, podemos avisar ou cobrar taxa padrão?
             // O usuário pediu especificamente esses valores. Vamos assumir que se não tá na lista, é "A combinar" ou avisar.
@@ -208,7 +214,7 @@ ${finalComplement ? `Compl: ${finalComplement}` : ''}
 ${itemsList}
 
 💰 *Subtotal:* ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(subtotal)}
-🛵 *Entrega:* ${deliveryFee === 0 && getDeliveryFee(finalNeighborhoodStr) !== 0 ? 'A Combinar' : new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(deliveryFee)}
+🛵 *Entrega:* ${deliveryFee === 0 && !availableNeighborhoods.some(n => n.name === finalNeighborhoodStr) ? 'A Combinar' : new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(deliveryFee)}
 💰 *TOTAL:* ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(subtotal + deliveryFee)}
 💳 *PAGAMENTO:* ${paymentMethod.toUpperCase()}
 ${paymentMethod === 'dinheiro' && troco ? `💱 *Troco para:* R$ ${troco}` : ''}
@@ -258,8 +264,8 @@ ${paymentMethod === 'dinheiro' && troco ? `💱 *Troco para:* R$ ${troco}` : ''}
                     onChange={e => setGuestNeighborhood(e.target.value)}
                 >
                     <option value="">Selecione o Bairro</option>
-                    {NEIGHBORHOODS.map(n => (
-                        <option key={n} value={n}>{n}</option>
+                    {availableNeighborhoods.map(n => (
+                        <option key={n.name} value={n.name}>{n.name} (+R$ {n.fee.toFixed(2)})</option>
                     ))}
                 </select>
                 <input style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd' }} placeholder="Complemento (Opcional)" value={guestComplement} onChange={e => setGuestComplement(e.target.value)} />
@@ -408,8 +414,8 @@ ${paymentMethod === 'dinheiro' && troco ? `💱 *Troco para:* R$ ${troco}` : ''}
                                         onChange={e => setNewNeighborhood(e.target.value)}
                                     >
                                         <option value="">Selecione o Bairro</option>
-                                        {NEIGHBORHOODS.map(n => (
-                                            <option key={n} value={n}>{n}</option>
+                                        {availableNeighborhoods.map(n => (
+                                            <option key={n.name} value={n.name}>{n.name} (+R$ {n.fee.toFixed(2)})</option>
                                         ))}
                                     </select>
                                     <input
@@ -552,7 +558,9 @@ ${paymentMethod === 'dinheiro' && troco ? `💱 *Troco para:* R$ ${troco}` : ''}
                                     const activeNeighbor = isAuthenticated
                                         ? (user?.savedAddresses?.[selectedAddressIndex]?.neighborhood || user?.address?.neighborhood || '')
                                         : guestNeighborhood;
-                                    const fee = getDeliveryFee(activeNeighbor);
+
+                                    const foundFee = availableNeighborhoods.find(n => n.name === activeNeighbor);
+                                    const fee = foundFee ? foundFee.fee : null;
 
                                     if (fee === null && activeNeighbor.trim().length > 0) return 'A Combinar';
                                     if (activeNeighbor.trim().length === 0) return 'Selecione o bairro';
@@ -567,7 +575,8 @@ ${paymentMethod === 'dinheiro' && troco ? `💱 *Troco para:* R$ ${troco}` : ''}
                                     const activeNeighbor = isAuthenticated
                                         ? (user?.savedAddresses?.[selectedAddressIndex]?.neighborhood || user?.address?.neighborhood || '')
                                         : guestNeighborhood;
-                                    const fee = getDeliveryFee(activeNeighbor) ?? 0;
+                                    const foundFee = availableNeighborhoods.find(n => n.name === activeNeighbor);
+                                    const fee = foundFee ? foundFee.fee : 0;
                                     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(subtotal + fee);
                                 })()}
                             </span>

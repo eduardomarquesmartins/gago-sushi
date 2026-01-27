@@ -11,6 +11,7 @@ export default async function AdminSettings() {
                 currentWhatsapp={config.whatsappNumber}
                 currentDeliveryFee={config.deliveryFee}
                 currentPixKey={config.pixKey}
+                currentNeighborhoodFees={config.neighborhoodFees || []}
             />
         </div>
     );
