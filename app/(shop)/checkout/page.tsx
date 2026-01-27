@@ -265,7 +265,7 @@ ${paymentMethod === 'dinheiro' && troco ? `💱 *Troco para:* R$ ${troco}` : ''}
                 >
                     <option value="">Selecione o Bairro</option>
                     {availableNeighborhoods.map(n => (
-                        <option key={n.name} value={n.name}>{n.name} (+R$ {n.fee.toFixed(2)})</option>
+                        <option key={n.name} value={n.name}>{n.name}</option>
                     ))}
                 </select>
                 <input style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ddd' }} placeholder="Complemento (Opcional)" value={guestComplement} onChange={e => setGuestComplement(e.target.value)} />
@@ -415,7 +415,7 @@ ${paymentMethod === 'dinheiro' && troco ? `💱 *Troco para:* R$ ${troco}` : ''}
                                     >
                                         <option value="">Selecione o Bairro</option>
                                         {availableNeighborhoods.map(n => (
-                                            <option key={n.name} value={n.name}>{n.name} (+R$ {n.fee.toFixed(2)})</option>
+                                            <option key={n.name} value={n.name}>{n.name}</option>
                                         ))}
                                     </select>
                                     <input
