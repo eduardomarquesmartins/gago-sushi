@@ -484,14 +484,14 @@ function handlePrint(order: Order) {
             <head>
                 <title>Pedido #${order.id}</title>
                 <style>
-                    body { font-family: 'Courier New', monospace; width: 280px; margin: 0; padding: 10px; font-size: 12px; color: #000; }
-                    .header { text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 10px; text-transform: uppercase; }
+                    body { font-family: 'Courier New', monospace; width: 100%; margin: 0; padding: 5px; font-size: 14px; color: #000; line-height: 1.2; }
+                    .header { text-align: center; font-weight: bold; font-size: 18px; margin-bottom: 10px; text-transform: uppercase; }
                     .divider { border-top: 1px dashed #000; margin: 8px 0; }
-                    .section-title { font-weight: bold; font-size: 13px; margin-bottom: 4px; text-transform: uppercase; }
-                    .item { display: flex; justify-content: space-between; margin-bottom: 2px; }
-                    .total { display: flex; justify-content: space-between; font-weight: bold; font-size: 14px; margin-top: 5px; }
+                    .section-title { font-weight: bold; font-size: 15px; margin-bottom: 4px; text-transform: uppercase; }
+                    .item { display: flex; justify-content: space-between; margin-bottom: 4px; }
+                    .total { display: flex; justify-content: space-between; font-weight: bold; font-size: 18px; margin-top: 5px; }
                     .info { margin-bottom: 2px; }
-                    @page { margin: 0; }
+                    @page { margin: 0; size: auto; }
                 </style>
             </head>
             <body>
