@@ -10,12 +10,16 @@ import mongoose from 'mongoose';
 
 // === Admin Auth & Store Config ===
 
+
+import { DELIVERY_FEES } from './constants';
+
 async function getStoreConfig() {
     const defaults = {
         adminPassword: '2026',
         whatsappNumber: '5511999999999',
         deliveryFee: 10,
-        pixKey: ''
+        pixKey: '',
+        neighborhoodFees: []
     };
 
     try {
@@ -24,9 +28,32 @@ async function getStoreConfig() {
 
         if (!config) {
             try {
-                config = await ConfigModel.create({ ...defaults, key: 'store_config' });
+                // Seeding initial data from constants if config doesn't exist
+                const initialNeighborhoods = Object.entries(DELIVERY_FEES).map(([name, fee]) => ({ name, fee }));
+                config = await ConfigModel.create({
+                    ...defaults,
+                    neighborhoodFees: initialNeighborhoods,
+                    key: 'store_config'
+                });
             } catch (error) {
                 return defaults;
+            }
+        } else {
+            // Migration for existing config with empty neighborhood list
+            if (!config.neighborhoodFees || config.neighborhoodFees.length === 0) {
+                const initialNeighborhoods = Object.entries(DELIVERY_FEES).map(([name, fee]) => ({ name, fee }));
+                // We don't save it to DB automatically on GET to avoid side effects, 
+                // but we return it so the UI shows it and saving will persist it.
+                // Actually, let's persist it to fix the user's issue permanently.
+                try {
+                    await ConfigModel.updateOne(
+                        { key: 'store_config' },
+                        { $set: { neighborhoodFees: initialNeighborhoods } }
+                    );
+                    config.neighborhoodFees = initialNeighborhoods;
+                } catch (e) {
+                    console.error("Failed to migrate neighborhoods", e);
+                }
             }
         }
 
