@@ -485,7 +485,7 @@ function handlePrint(order: Order) {
                 <title>Pedido #${order.id}</title>
                 <style>
                     * { box-sizing: border-box; }
-                    body { font-family: 'Courier New', monospace; width: 100%; margin: 0; padding: 0; font-size: 14px; color: #000; line-height: 1.2; word-wrap: break-word; overflow-x: hidden; }
+                    body { font-family: 'Courier New', monospace; width: 100%; margin: 0; padding: 5px; font-size: 14px; color: #000; line-height: 1.2; word-wrap: break-word; overflow-x: hidden; }
                     .header { text-align: center; font-weight: bold; font-size: 18px; margin-bottom: 10px; text-transform: uppercase; }
                     .divider { border-top: 1px dashed #000; margin: 8px 0; }
                     .section-title { font-weight: bold; font-size: 15px; margin-bottom: 4px; text-transform: uppercase; }
