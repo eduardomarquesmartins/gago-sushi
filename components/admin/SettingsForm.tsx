@@ -36,6 +36,15 @@ export function SettingsForm(props: { currentWhatsapp: string; currentDeliveryFe
         setNewNeighborhoodFee('');
     };
 
+    const handleUpdateNeighborhoodFee = (index: number, newFeeStr: string) => {
+        const updated = [...neighborhoodFees];
+        const newFee = parseFloat(newFeeStr);
+        if (!isNaN(newFee)) {
+            updated[index].fee = newFee;
+            setNeighborhoodFees(updated);
+        }
+    };
+
     const handleRemoveNeighborhood = (index: number) => {
         const updated = [...neighborhoodFees];
         updated.splice(index, 1);
@@ -166,11 +175,26 @@ export function SettingsForm(props: { currentWhatsapp: string; currentDeliveryFe
                             <div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem', background: '#333', borderRadius: '6px', border: '1px solid #444' }}>
                                 <span style={{ color: '#fff', fontWeight: 500 }}>{item.name}</span>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                    <span style={{ color: '#00c851', fontWeight: 600 }}>R$ {item.fee.toFixed(2)}</span>
+                                    <span style={{ color: '#aaa', fontSize: '0.9rem' }}>R$</span>
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        min="0"
+                                        value={item.fee}
+                                        onChange={(e) => handleUpdateNeighborhoodFee(index, e.target.value)}
+                                        style={{
+                                            ...inputStyle,
+                                            width: '80px',
+                                            padding: '0.25rem 0.5rem',
+                                            textAlign: 'right',
+                                            background: '#222',
+                                            borderColor: '#555'
+                                        }}
+                                    />
                                     <button
                                         type="button"
                                         onClick={() => handleRemoveNeighborhood(index)}
-                                        style={{ background: 'rgba(255, 68, 68, 0.1)', border: 'none', color: '#ff4444', padding: '0.25rem', borderRadius: '4px', cursor: 'pointer' }}
+                                        style={{ background: 'rgba(255, 68, 68, 0.1)', border: 'none', color: '#ff4444', padding: '0.25rem', borderRadius: '4px', cursor: 'pointer', marginLeft: '0.5rem' }}
                                     >
                                         <Trash2 size={16} />
                                     </button>
